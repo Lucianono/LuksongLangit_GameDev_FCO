@@ -5,13 +5,16 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     Rigidbody2D rb;
-    public float moveSpeed = 5f;
-    public float baseJumpForce = 5f; // Base jump force
-    public float maxJumpForce = 10f; // Maximum jump force
+    public float moveSpeed = 10f;
+    public float baseJumpForce = 10f; // Base jump force
+    public float maxJumpForce = 20f; // Maximum jump force
     public float jumpChargeRate = 10f; // Rate at which jump force increases while charging
     public float maxJumpTime = 1f; // Maximum duration of the jump
     private float jumpTimeCounter;
     private bool isGrounded;
+    private bool isChargingJump;
+    private bool isJumping;
+    private float lastHorizontalInput;
 
     void Start()
     {
@@ -21,11 +24,23 @@ public class Movement : MonoBehaviour
     void Update()
     {
         float hAxis = Input.GetAxis("Horizontal");
-        rb.velocity = new Vector2(hAxis * moveSpeed, rb.velocity.y);
+
+        // Allow horizontal movement only if not charging jump or jumping
+        if (!isChargingJump && isGrounded)
+        {
+            rb.velocity = new Vector2(hAxis * moveSpeed, rb.velocity.y);
+            lastHorizontalInput = hAxis;
+        }
+        else
+        {
+            // Stop horizontal movement while charging jump or jumping
+            rb.velocity = new Vector2(0f, rb.velocity.y);
+        }
 
         // Start charging the jump if the player is grounded and presses the jump button
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
+            isChargingJump = true;
             jumpTimeCounter = 0;
         }
 
@@ -39,14 +54,30 @@ public class Movement : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Space) && isGrounded)
         {
             float jumpForce = CalculateJumpForce();
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            Vector2 jumpDirection = Vector2.right * lastHorizontalInput;
+            rb.velocity = new Vector2(jumpDirection.x * jumpForce, jumpForce);
             jumpTimeCounter = 0;
+            isChargingJump = false;
+            isJumping = true;
+        }
+
+        // Prevent changing direction while mid-air
+        if (!isGrounded)
+        {
+            // Set the horizontal velocity based on the last horizontal input direction
+            rb.velocity = new Vector2(lastHorizontalInput * moveSpeed, rb.velocity.y);
         }
 
         // Reset isGrounded flag when leaving the ground
         if (!isGrounded)
         {
             jumpTimeCounter = 0;
+        }
+
+        // Set isJumping to false when landing
+        if (isGrounded && isJumping)
+        {
+            isJumping = false;
         }
     }
 
