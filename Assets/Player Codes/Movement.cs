@@ -4,37 +4,53 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    //Declare Rigidbody 2D
     Rigidbody2D rb;
-
-    //Declare Movement Multiplier
-    public float moveSpeed = 10f;
-
-    //Declare Jump Force
-    public float jumpForce = 10f;
-
-    //Check if Player is on Ground
-    public bool isGrounded;
+    public float moveSpeed = 5f;
+    public float baseJumpForce = 5f; // Base jump force
+    public float maxJumpForce = 10f; // Maximum jump force
+    public float jumpChargeRate = 10f; // Rate at which jump force increases while charging
+    public float maxJumpTime = 1f; // Maximum duration of the jump
+    private float jumpTimeCounter;
+    private bool isGrounded;
 
     void Start()
     {
-        //Get Rigidbody 2D
         rb = GetComponent<Rigidbody2D>();
     }
-    // Update is called once per frame
+
     void Update()
     {
-        //Store Horizontal Axis
         float hAxis = Input.GetAxis("Horizontal");
-
-        //Set Velocity
         rb.velocity = new Vector2(hAxis * moveSpeed, rb.velocity.y);
 
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        // Start charging the jump if the player is grounded and presses the jump button
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
+            jumpTimeCounter = 0;
+        }
+
+        // Charge the jump if the player is holding down the jump button
+        if (Input.GetKey(KeyCode.Space) && isGrounded)
+        {
+            jumpTimeCounter += Time.deltaTime;
+        }
+
+        // Release the charged jump
+        if (Input.GetKeyUp(KeyCode.Space) && isGrounded)
+        {
+            float jumpForce = CalculateJumpForce();
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            jumpTimeCounter = 0;
+        }
+
+        // Reset isGrounded flag when leaving the ground
+        if (!isGrounded)
+        {
+            jumpTimeCounter = 0;
         }
     }
+
+    // Set isGrounded to true when the player is on the ground
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
@@ -42,6 +58,8 @@ public class Movement : MonoBehaviour
             isGrounded = true;
         }
     }
+
+    // Set isGrounded to false when the player leaves the ground
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
@@ -50,4 +68,11 @@ public class Movement : MonoBehaviour
         }
     }
 
+    // Calculate the jump force based on the time the jump button was held down
+    private float CalculateJumpForce()
+    {
+        float chargePercentage = Mathf.Clamp01(jumpTimeCounter / maxJumpTime);
+        float jumpForce = Mathf.Lerp(baseJumpForce, maxJumpForce, chargePercentage);
+        return jumpForce;
+    }
 }
