@@ -5,6 +5,8 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     Rigidbody2D rb;
+    SpriteRenderer sr;
+    Animator animator;
     public float moveSpeed = 10f;
     public float baseJumpForce = 10f; // Base jump force
     public float maxJumpForce = 20f; // Maximum jump force
@@ -19,11 +21,16 @@ public class Movement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
     {
         float hAxis = Input.GetAxis("Horizontal");
+
+        if (hAxis < 0) sr.flipX = true;
+        else if (hAxis > 0) sr.flipX = false;
 
         // Allow horizontal movement only if not charging jump or jumping
         if (!isChargingJump && isGrounded)
@@ -42,6 +49,7 @@ public class Movement : MonoBehaviour
         {
             isChargingJump = true;
             jumpTimeCounter = 0;
+            animator.SetTrigger("charge");
         }
 
         // Charge the jump if the player is holding down the jump button
@@ -59,6 +67,7 @@ public class Movement : MonoBehaviour
             jumpTimeCounter = 0;
             isChargingJump = false;
             isJumping = true;
+            animator.SetTrigger("jump");
         }
 
         // Prevent changing direction while mid-air
@@ -79,6 +88,10 @@ public class Movement : MonoBehaviour
         {
             isJumping = false;
         }
+
+        animator.SetBool("isWalking", hAxis != 0);
+        animator.SetBool("isFalling", rb.velocity.y < 0);
+
     }
 
     // Set isGrounded to true when the player is on the ground
