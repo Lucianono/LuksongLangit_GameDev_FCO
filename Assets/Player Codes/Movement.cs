@@ -12,6 +12,7 @@ public class Movement : MonoBehaviour
     public float maxJumpForce = 20f; // Maximum jump force
     public float jumpChargeRate = 10f; // Rate at which jump force increases while charging
     public float maxJumpTime = 1f; // Maximum duration of the jump
+    private float jumpForce;
     private float jumpTimeCounter;
     private bool isGrounded;
     private bool isChargingJump;
@@ -36,7 +37,12 @@ public class Movement : MonoBehaviour
         if (!isChargingJump && isGrounded)
         {
             rb.velocity = new Vector2(hAxis * moveSpeed, rb.velocity.y);
-            lastHorizontalInput = hAxis;
+            if (isJumping) { }
+            else
+            {
+                lastHorizontalInput = hAxis;
+            }
+
         }
         else
         {
@@ -61,13 +67,14 @@ public class Movement : MonoBehaviour
         // Release the charged jump
         if (Input.GetKeyUp(KeyCode.Space) && isGrounded)
         {
-            float jumpForce = CalculateJumpForce();
+            jumpForce = CalculateJumpForce();
             Vector2 jumpDirection = Vector2.right * lastHorizontalInput;
             rb.velocity = new Vector2(jumpDirection.x * jumpForce, jumpForce);
             jumpTimeCounter = 0;
             isChargingJump = false;
             isJumping = true;
             animator.SetTrigger("jump");
+            //Debug.Log(lastHorizontalInput);
         }
 
         // Prevent changing direction while mid-air
@@ -85,7 +92,7 @@ public class Movement : MonoBehaviour
 
         // Set isJumping to false when landing
         if (isGrounded && isJumping)
-        {
+        {   
             isJumping = false;
         }
 
@@ -103,6 +110,16 @@ public class Movement : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground") && !isGrounded)
+        {
+            jumpForce = 0 ;
+            Debug.Log(jumpForce);
+        }
+    }
+
+
     // Set isGrounded to false when the player leaves the ground
     private void OnTriggerExit2D(Collider2D collision)
     {
@@ -116,7 +133,7 @@ public class Movement : MonoBehaviour
     private float CalculateJumpForce()
     {
         float chargePercentage = Mathf.Clamp01(jumpTimeCounter / maxJumpTime);
-        float jumpForce = Mathf.Lerp(baseJumpForce, maxJumpForce, chargePercentage);
+        jumpForce = Mathf.Lerp(baseJumpForce, maxJumpForce, chargePercentage);
         return jumpForce;
     }
 }
