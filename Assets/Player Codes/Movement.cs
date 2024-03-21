@@ -17,6 +17,7 @@ public class Movement : MonoBehaviour
     private bool isGrounded;
     private bool isChargingJump;
     private bool isJumping;
+    private bool isWalled;
     private float lastHorizontalInput;
 
     void Start()
@@ -37,11 +38,6 @@ public class Movement : MonoBehaviour
         if (!isChargingJump && isGrounded)
         {
             rb.velocity = new Vector2(hAxis * moveSpeed, rb.velocity.y);
-            if (isJumping) { }
-            else
-            {
-                lastHorizontalInput = hAxis;
-            }
 
         }
         else
@@ -53,6 +49,7 @@ public class Movement : MonoBehaviour
         // Start charging the jump if the player is grounded and presses the jump button
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
+            lastHorizontalInput = hAxis;
             isChargingJump = true;
             jumpTimeCounter = 0;
             animator.SetTrigger("charge");
@@ -81,7 +78,13 @@ public class Movement : MonoBehaviour
         if (!isGrounded)
         {
             // Set the horizontal velocity based on the last horizontal input direction
-            rb.velocity = new Vector2(lastHorizontalInput * moveSpeed, rb.velocity.y);
+            if(isWalled){
+                 rb.velocity = new Vector2(-lastHorizontalInput * moveSpeed, rb.velocity.y);
+            }
+            else{
+                rb.velocity = new Vector2(lastHorizontalInput * moveSpeed, rb.velocity.y);
+            }
+            
         }
 
         // Reset isGrounded flag when leaving the ground
@@ -107,6 +110,7 @@ public class Movement : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+            isWalled = false;
         }
     }
 
@@ -114,8 +118,7 @@ public class Movement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground") && !isGrounded)
         {
-            jumpForce = 0 ;
-            Debug.Log(jumpForce);
+            isWalled = true;
         }
     }
 
