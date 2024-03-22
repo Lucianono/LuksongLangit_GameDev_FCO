@@ -17,6 +17,7 @@ public class Movement : MonoBehaviour
     private bool isGrounded;
     private bool isChargingJump;
     private bool isJumping;
+    private bool hasStartedCharging; // New variable to track if charging animation has started
     private float lastHorizontalInput;
 
     void Start()
@@ -51,30 +52,30 @@ public class Movement : MonoBehaviour
         }
 
         // Start charging the jump if the player is grounded and presses the jump button
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !animator.GetBool("isFalling") && !isChargingJump)
         {
             isChargingJump = true;
+            hasStartedCharging = true; // Charging animation has started
             jumpTimeCounter = 0;
             animator.SetTrigger("charge");
         }
 
-        // Charge the jump if the player is holding down the jump button
-        if (Input.GetKey(KeyCode.Space) && isGrounded)
+        // Charge the jump if the player is holding down the jump button and charging animation has started
+        if (Input.GetKey(KeyCode.Space) && isGrounded && !animator.GetBool("isFalling") && hasStartedCharging)
         {
             jumpTimeCounter += Time.deltaTime;
+
+            // Automatically trigger the jump if the max jump force has been reached
+            if (jumpTimeCounter >= maxJumpTime)
+            {
+                ReleaseJump();
+            }
         }
 
-        // Release the charged jump
-        if (Input.GetKeyUp(KeyCode.Space) && isGrounded)
+        // Release the charged jump if charging animation has started
+        if (Input.GetKeyUp(KeyCode.Space) && isGrounded && !animator.GetBool("isFalling") && hasStartedCharging)
         {
-            jumpForce = CalculateJumpForce();
-            Vector2 jumpDirection = Vector2.right * lastHorizontalInput;
-            rb.velocity = new Vector2(jumpDirection.x * jumpForce, jumpForce);
-            jumpTimeCounter = 0;
-            isChargingJump = false;
-            isJumping = true;
-            animator.SetTrigger("jump");
-            //Debug.Log(lastHorizontalInput);
+            ReleaseJump();
         }
 
         // Prevent changing direction while mid-air
@@ -92,10 +93,9 @@ public class Movement : MonoBehaviour
 
         // Set isJumping to false when landing
         if (isGrounded && isJumping)
-        {   
+        {
             isJumping = false;
         }
-
         animator.SetBool("isWalking", hAxis != 0);
         animator.SetBool("isFalling", rb.velocity.y < 0);
 
@@ -114,7 +114,7 @@ public class Movement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground") && !isGrounded)
         {
-            jumpForce = 0 ;
+            jumpForce = 0;
             Debug.Log(jumpForce);
         }
     }
@@ -135,5 +135,18 @@ public class Movement : MonoBehaviour
         float chargePercentage = Mathf.Clamp01(jumpTimeCounter / maxJumpTime);
         jumpForce = Mathf.Lerp(baseJumpForce, maxJumpForce, chargePercentage);
         return jumpForce;
+    }
+
+    // Release the charged jump
+    private void ReleaseJump()
+    {
+        jumpForce = CalculateJumpForce();
+        Vector2 jumpDirection = Vector2.right * lastHorizontalInput;
+        rb.velocity = new Vector2(jumpDirection.x * jumpForce, jumpForce);
+        jumpTimeCounter = 0;
+        isChargingJump = false;
+        isJumping = true;
+        animator.SetTrigger("jump");
+        hasStartedCharging = false; // Reset charging animation flag
     }
 }
