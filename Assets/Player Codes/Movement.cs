@@ -49,7 +49,7 @@ public class Movement : MonoBehaviour
         // Start charging the jump if the player is grounded and presses the jump button
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            lastHorizontalInput = hAxis;
+            
             isChargingJump = true;
             jumpTimeCounter = 0;
             animator.SetTrigger("charge");
@@ -59,11 +59,13 @@ public class Movement : MonoBehaviour
         if (Input.GetKey(KeyCode.Space) && isGrounded)
         {
             jumpTimeCounter += Time.deltaTime;
+            
         }
 
         // Release the charged jump
         if (Input.GetKeyUp(KeyCode.Space) && isGrounded)
         {
+            lastHorizontalInput = hAxis;
             jumpForce = CalculateJumpForce();
             Vector2 jumpDirection = Vector2.right * lastHorizontalInput;
             rb.velocity = new Vector2(jumpDirection.x * jumpForce, jumpForce);
@@ -77,6 +79,9 @@ public class Movement : MonoBehaviour
         // Prevent changing direction while mid-air
         if (!isGrounded)
         {
+            //reset the jump timer 
+            jumpTimeCounter = 0;
+
             // Set the horizontal velocity based on the last horizontal input direction
             if(isWalled){
                  rb.velocity = new Vector2(-lastHorizontalInput * moveSpeed, rb.velocity.y);
@@ -85,12 +90,6 @@ public class Movement : MonoBehaviour
                 rb.velocity = new Vector2(lastHorizontalInput * moveSpeed, rb.velocity.y);
             }
             
-        }
-
-        // Reset isGrounded flag when leaving the ground
-        if (!isGrounded)
-        {
-            jumpTimeCounter = 0;
         }
 
         // Set isJumping to false when landing
@@ -114,6 +113,7 @@ public class Movement : MonoBehaviour
         }
     }
 
+    // detect if player is tumama sa wall
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground") && !isGrounded)
@@ -136,6 +136,7 @@ public class Movement : MonoBehaviour
     private float CalculateJumpForce()
     {
         float chargePercentage = Mathf.Clamp01(jumpTimeCounter / maxJumpTime);
+        Debug.Log(chargePercentage);
         jumpForce = Mathf.Lerp(baseJumpForce, maxJumpForce, chargePercentage);
         return jumpForce;
     }
