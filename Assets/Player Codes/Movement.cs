@@ -7,6 +7,8 @@ public class Movement : MonoBehaviour
     Rigidbody2D rb;
     SpriteRenderer sr;
     Animator animator;
+    AudioSource audioSource;
+    public AudioClip jumpSFX, landSFX, hitSFX;
     public float moveSpeed = 10f;
     public float baseJumpForce = 10f; // Base jump force
     public float maxJumpForce = 20f; // Maximum jump force
@@ -24,6 +26,7 @@ public class Movement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -42,7 +45,6 @@ public class Movement : MonoBehaviour
             {
                 lastHorizontalInput = hAxis;
             }
-
         }
         else
         {
@@ -74,6 +76,7 @@ public class Movement : MonoBehaviour
             isChargingJump = false;
             isJumping = true;
             animator.SetTrigger("jump");
+            playSound(jumpSFX);
             //Debug.Log(lastHorizontalInput);
         }
 
@@ -99,6 +102,26 @@ public class Movement : MonoBehaviour
         animator.SetBool("isWalking", hAxis != 0);
         animator.SetBool("isFalling", rb.velocity.y < 0);
 
+        if (rb.velocity.x != 0 && isGrounded)
+        {
+            if (!audioSource.isPlaying)
+            {
+                audioSource.Play();
+            }
+        }
+        else 
+        {
+            audioSource.Stop();
+        }
+
+    }
+
+    void playSound(AudioClip c) 
+    {
+        AudioSource aud = gameObject.AddComponent<AudioSource>();
+        aud.clip = c;
+        aud.Play();
+        Destroy(aud, c.length);
     }
 
     // Set isGrounded to true when the player is on the ground
@@ -107,6 +130,14 @@ public class Movement : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            playSound(landSFX);
         }
     }
 
