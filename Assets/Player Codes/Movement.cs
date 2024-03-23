@@ -17,7 +17,7 @@ public class Movement : MonoBehaviour
     public float jumpForce;
     public float jumpTimeCounter = 0;
     public bool isGrounded;
-    public bool isChargingJump;
+    public bool isChargingJump = false;
     public bool isJumping;
     public bool hasStartedCharging; // New variable to track if charging animation has started
     public float lastHorizontalInput;
@@ -37,16 +37,17 @@ public class Movement : MonoBehaviour
         if (hAxis < 0) sr.flipX = true;
         else if (hAxis > 0) sr.flipX = false;
 
+        // Stop horizontal movement while charging jump or jumping
+        if(isChargingJump){
+            rb.velocity = new Vector2(0f, rb.velocity.y);
+            Debug.Log("cahrge true");
+        }
+
         // Allow horizontal movement only if not charging jump or jumping
         if (!isChargingJump && isGrounded && !isJumping)
         {
             rb.velocity = new Vector2(hAxis * moveSpeed, rb.velocity.y);
             lastHorizontalInput = hAxis;
-        }
-        else
-        {
-            // Stop horizontal movement while charging jump or jumping
-            rb.velocity = new Vector2(0f, rb.velocity.y);
         }
 
         // Start charging the jump if the player is grounded and presses the jump button
@@ -54,13 +55,12 @@ public class Movement : MonoBehaviour
         {
             
             isChargingJump = true;
-            hasStartedCharging = true; // Charging animation has started
             jumpTimeCounter = 0;
             animator.SetTrigger("charge");
         }
 
         // Charge the jump if the player is holding down the jump button and charging animation has started
-        if (Input.GetKey(KeyCode.Space) && isGrounded && !animator.GetBool("isFalling") && hasStartedCharging)
+        if (Input.GetKey(KeyCode.Space) && isGrounded && !animator.GetBool("isFalling"))
         {
             jumpTimeCounter += Time.deltaTime;
 
@@ -72,27 +72,35 @@ public class Movement : MonoBehaviour
         }
 
         // Release the charged jump if charging animation has started
-        if (Input.GetKeyUp(KeyCode.Space) && isGrounded && !animator.GetBool("isFalling") && hasStartedCharging)
+        if (Input.GetKeyUp(KeyCode.Space) && isGrounded && !animator.GetBool("isFalling"))
         {
             ReleaseJump();
         }
 
-        // Prevent changing direction while mid-air
-        if (!isGrounded)
-        {
+        // // Prevent changing direction while mid-air
+        // if (!isGrounded)
+        // {
 
-            // Set the horizontal velocity based on the last horizontal input direction
-            rb.velocity = new Vector2( lastHorizontalInput * moveSpeed, rb.velocity.y);
+        //     // Set the horizontal velocity based on the last horizontal input direction
+        //     rb.velocity = new Vector2( lastHorizontalInput * moveSpeed, rb.velocity.y);
             
-        }
+        // }
 
         // Set isJumping to false when landing
         if (isGrounded && isJumping)
         {
             isJumping = false;
         }
+
+        if(rb.velocity.y < -1){
+
+            rb.sharedMaterial = normalMat;
+
+        }
         animator.SetBool("isWalking", hAxis != 0);
-        animator.SetBool("isFalling", rb.velocity.y < 0);
+        animator.SetBool("isFalling", rb.velocity.y < -0.5);
+
+        
 
     }
 
@@ -100,6 +108,7 @@ public class Movement : MonoBehaviour
     private void OnTriggerStay2D(Collider2D collision)
     {
         Debug.Log("ground detect");
+        jumpForce = 0;
 
         if (collision.gameObject.CompareTag("Ground"))
         {
@@ -133,13 +142,13 @@ public class Movement : MonoBehaviour
     private void ReleaseJump()
     {
         jumpForce = CalculateJumpForce();
-        Vector2 jumpDirection = Vector2.right * lastHorizontalInput;
+        Vector2 jumpDirection = Vector2.right * lastHorizontalInput ;
         rb.velocity = new Vector2(jumpDirection.x * jumpForce, jumpForce);
         jumpTimeCounter = 0;
         isChargingJump = false;
         isJumping = true;
         rb.sharedMaterial = bounceMat;
         animator.SetTrigger("jump");
-        hasStartedCharging = false; // Reset charging animation flag
+        Debug.Log("bouncerOn");
     }
 }
