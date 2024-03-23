@@ -40,7 +40,6 @@ public class Movement : MonoBehaviour
         {
             rb.velocity = new Vector2(hAxis * moveSpeed, rb.velocity.y);
             lastHorizontalInput = hAxis;
-
         }
         else
         {
