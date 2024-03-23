@@ -7785,11 +7785,11 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 5
+  m_Mass: 10
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 6200000, guid: 30e4df9bcc21c054cafc46a4898eadad, type: 2}
+  m_GravityScale: 4
+  m_Material: {fileID: 6200000, guid: e6a31e580c3431d439f8721759df38d0, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -7798,7 +7798,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!61 &2055128706
 BoxCollider2D:
@@ -7857,9 +7857,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4680ddabb0e73924f96369fd2fb2cac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  baseJumpForce: 5
-  maxJumpForce: 10
+  moveSpeed: 6
+  baseJumpForce: 10
+  maxJumpForce: 25
   jumpChargeRate: 10
   maxJumpTime: 1
 --- !u!70 &2055128712
@@ -7894,8 +7894,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.01233478, y: -0.22853142}
-  m_Size: {x: 1.267762, y: 1.2892402}
+  m_Offset: {x: 0.01233478, y: -0.19118881}
+  m_Size: {x: 1.267762, y: 1.3061218}
   m_Direction: 0
 --- !u!95 &2055128713
 Animator:

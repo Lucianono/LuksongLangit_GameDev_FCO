@@ -17,6 +17,7 @@ public class Movement : MonoBehaviour
     private bool isGrounded;
     private bool isChargingJump;
     private bool isJumping;
+    private bool hasStartedCharging; // New variable to track if charging animation has started
     private bool isWalled;
     private float lastHorizontalInput;
 
@@ -38,6 +39,7 @@ public class Movement : MonoBehaviour
         if (!isChargingJump && isGrounded)
         {
             rb.velocity = new Vector2(hAxis * moveSpeed, rb.velocity.y);
+            lastHorizontalInput = hAxis;
 
         }
         else
@@ -47,36 +49,39 @@ public class Movement : MonoBehaviour
         }
 
         // Start charging the jump if the player is grounded and presses the jump button
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !animator.GetBool("isFalling") && !isChargingJump)
         {
-            lastHorizontalInput = hAxis;
+            
             isChargingJump = true;
+            hasStartedCharging = true; // Charging animation has started
             jumpTimeCounter = 0;
             animator.SetTrigger("charge");
         }
 
-        // Charge the jump if the player is holding down the jump button
-        if (Input.GetKey(KeyCode.Space) && isGrounded)
+        // Charge the jump if the player is holding down the jump button and charging animation has started
+        if (Input.GetKey(KeyCode.Space) && isGrounded && !animator.GetBool("isFalling") && hasStartedCharging)
         {
             jumpTimeCounter += Time.deltaTime;
+
+            // Automatically trigger the jump if the max jump force has been reached
+            if (jumpTimeCounter >= maxJumpTime)
+            {
+                ReleaseJump();
+            }
         }
 
-        // Release the charged jump
-        if (Input.GetKeyUp(KeyCode.Space) && isGrounded)
+        // Release the charged jump if charging animation has started
+        if (Input.GetKeyUp(KeyCode.Space) && isGrounded && !animator.GetBool("isFalling") && hasStartedCharging)
         {
-            jumpForce = CalculateJumpForce();
-            Vector2 jumpDirection = Vector2.right * lastHorizontalInput;
-            rb.velocity = new Vector2(jumpDirection.x * jumpForce, jumpForce);
-            jumpTimeCounter = 0;
-            isChargingJump = false;
-            isJumping = true;
-            animator.SetTrigger("jump");
-            //Debug.Log(lastHorizontalInput);
+            ReleaseJump();
         }
 
         // Prevent changing direction while mid-air
         if (!isGrounded)
         {
+            //reset the jump timer 
+            jumpTimeCounter = 0;
+
             // Set the horizontal velocity based on the last horizontal input direction
             if(isWalled){
                  rb.velocity = new Vector2(-lastHorizontalInput * moveSpeed, rb.velocity.y);
@@ -87,18 +92,11 @@ public class Movement : MonoBehaviour
             
         }
 
-        // Reset isGrounded flag when leaving the ground
-        if (!isGrounded)
-        {
-            jumpTimeCounter = 0;
-        }
-
         // Set isJumping to false when landing
         if (isGrounded && isJumping)
-        {   
+        {
             isJumping = false;
         }
-
         animator.SetBool("isWalking", hAxis != 0);
         animator.SetBool("isFalling", rb.velocity.y < 0);
 
@@ -114,6 +112,7 @@ public class Movement : MonoBehaviour
         }
     }
 
+    // detect if player is tumama sa wall
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground") && !isGrounded)
@@ -136,7 +135,21 @@ public class Movement : MonoBehaviour
     private float CalculateJumpForce()
     {
         float chargePercentage = Mathf.Clamp01(jumpTimeCounter / maxJumpTime);
+        Debug.Log(chargePercentage);
         jumpForce = Mathf.Lerp(baseJumpForce, maxJumpForce, chargePercentage);
         return jumpForce;
+    }
+
+    // Release the charged jump
+    private void ReleaseJump()
+    {
+        jumpForce = CalculateJumpForce();
+        Vector2 jumpDirection = Vector2.right * lastHorizontalInput;
+        rb.velocity = new Vector2(jumpDirection.x * jumpForce, jumpForce);
+        jumpTimeCounter = 0;
+        isChargingJump = false;
+        isJumping = true;
+        animator.SetTrigger("jump");
+        hasStartedCharging = false; // Reset charging animation flag
     }
 }
