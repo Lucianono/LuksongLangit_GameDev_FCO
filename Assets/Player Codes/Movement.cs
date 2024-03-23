@@ -18,6 +18,7 @@ public class Movement : MonoBehaviour
     private bool isChargingJump;
     private bool isJumping;
     private bool hasStartedCharging; // New variable to track if charging animation has started
+    private bool isWalled;
     private float lastHorizontalInput;
 
     void Start()
@@ -38,11 +39,6 @@ public class Movement : MonoBehaviour
         if (!isChargingJump && isGrounded)
         {
             rb.velocity = new Vector2(hAxis * moveSpeed, rb.velocity.y);
-            if (isJumping) { }
-            else
-            {
-                lastHorizontalInput = hAxis;
-            }
 
         }
         else
@@ -54,6 +50,7 @@ public class Movement : MonoBehaviour
         // Start charging the jump if the player is grounded and presses the jump button
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !animator.GetBool("isFalling") && !isChargingJump)
         {
+            
             isChargingJump = true;
             hasStartedCharging = true; // Charging animation has started
             jumpTimeCounter = 0;
@@ -81,14 +78,17 @@ public class Movement : MonoBehaviour
         // Prevent changing direction while mid-air
         if (!isGrounded)
         {
-            // Set the horizontal velocity based on the last horizontal input direction
-            rb.velocity = new Vector2(lastHorizontalInput * moveSpeed, rb.velocity.y);
-        }
-
-        // Reset isGrounded flag when leaving the ground
-        if (!isGrounded)
-        {
+            //reset the jump timer 
             jumpTimeCounter = 0;
+
+            // Set the horizontal velocity based on the last horizontal input direction
+            if(isWalled){
+                 rb.velocity = new Vector2(-lastHorizontalInput * moveSpeed, rb.velocity.y);
+            }
+            else{
+                rb.velocity = new Vector2(lastHorizontalInput * moveSpeed, rb.velocity.y);
+            }
+            
         }
 
         // Set isJumping to false when landing
@@ -107,15 +107,16 @@ public class Movement : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+            isWalled = false;
         }
     }
 
+    // detect if player is tumama sa wall
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground") && !isGrounded)
         {
-            jumpForce = 0;
-            Debug.Log(jumpForce);
+            isWalled = true;
         }
     }
 
@@ -133,6 +134,7 @@ public class Movement : MonoBehaviour
     private float CalculateJumpForce()
     {
         float chargePercentage = Mathf.Clamp01(jumpTimeCounter / maxJumpTime);
+        Debug.Log(chargePercentage);
         jumpForce = Mathf.Lerp(baseJumpForce, maxJumpForce, chargePercentage);
         return jumpForce;
     }
