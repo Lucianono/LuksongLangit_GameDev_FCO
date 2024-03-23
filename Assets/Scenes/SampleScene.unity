@@ -2808,7 +2808,6 @@ GameObject:
   - component: {fileID: 1737419061}
   - component: {fileID: 1737419063}
   - component: {fileID: 2055128714}
-  - component: {fileID: 2055128706}
   - component: {fileID: 2055128712}
   - component: {fileID: 2055128710}
   - component: {fileID: 2055128713}
@@ -2902,7 +2901,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 4
-  m_Material: {fileID: 6200000, guid: e6a31e580c3431d439f8721759df38d0, type: 2}
+  m_Material: {fileID: 6200000, guid: 725757a0d80b8cd4b80a54620cb020dd, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -2913,51 +2912,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!61 &2055128706
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1737419059}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.0020082593, y: 0.58968925}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.75, y: 1.6875}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.33616197, y: 0.30225754}
-  m_EdgeRadius: 0
 --- !u!114 &2055128710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2975,6 +2929,15 @@ MonoBehaviour:
   maxJumpForce: 25
   jumpChargeRate: 10
   maxJumpTime: 1
+  bounceMat: {fileID: 6200000, guid: 725757a0d80b8cd4b80a54620cb020dd, type: 2}
+  normalMat: {fileID: 6200000, guid: f2308cde50351fe41b0f8cffa56047ce, type: 2}
+  jumpForce: 0
+  jumpTimeCounter: 0
+  isGrounded: 0
+  isChargingJump: 0
+  isJumping: 0
+  hasStartedCharging: 0
+  lastHorizontalInput: 0
 --- !u!70 &2055128712
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -3063,7 +3026,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.0013091266, y: -0.8605216}
+  m_Offset: {x: -0.0013091564, y: -0.85596657}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -3074,7 +3037,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.0261865, y: 0.0424757}
+  m_Size: {x: 1.0261865, y: 0.1108284}
   m_EdgeRadius: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

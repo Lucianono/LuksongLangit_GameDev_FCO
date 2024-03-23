@@ -12,14 +12,15 @@ public class Movement : MonoBehaviour
     public float maxJumpForce = 20f; // Maximum jump force
     public float jumpChargeRate = 10f; // Rate at which jump force increases while charging
     public float maxJumpTime = 1f; // Maximum duration of the jump
-    private float jumpForce;
-    private float jumpTimeCounter;
-    private bool isGrounded;
-    private bool isChargingJump;
-    private bool isJumping;
-    private bool hasStartedCharging; // New variable to track if charging animation has started
-    private bool isWalled;
-    private float lastHorizontalInput;
+    public PhysicsMaterial2D bounceMat, normalMat; 
+   
+    public float jumpForce;
+    public float jumpTimeCounter = 0;
+    public bool isGrounded;
+    public bool isChargingJump;
+    public bool isJumping;
+    public bool hasStartedCharging; // New variable to track if charging animation has started
+    public float lastHorizontalInput;
 
     void Start()
     {
@@ -30,13 +31,14 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
+
         float hAxis = Input.GetAxis("Horizontal");
 
         if (hAxis < 0) sr.flipX = true;
         else if (hAxis > 0) sr.flipX = false;
 
         // Allow horizontal movement only if not charging jump or jumping
-        if (!isChargingJump && isGrounded)
+        if (!isChargingJump && isGrounded && !isJumping)
         {
             rb.velocity = new Vector2(hAxis * moveSpeed, rb.velocity.y);
             lastHorizontalInput = hAxis;
@@ -78,16 +80,9 @@ public class Movement : MonoBehaviour
         // Prevent changing direction while mid-air
         if (!isGrounded)
         {
-            //reset the jump timer 
-            jumpTimeCounter = 0;
 
             // Set the horizontal velocity based on the last horizontal input direction
-            if(isWalled){
-                 rb.velocity = new Vector2(-lastHorizontalInput * moveSpeed, rb.velocity.y);
-            }
-            else{
-                rb.velocity = new Vector2(lastHorizontalInput * moveSpeed, rb.velocity.y);
-            }
+            rb.velocity = new Vector2( lastHorizontalInput * moveSpeed, rb.velocity.y);
             
         }
 
@@ -104,21 +99,16 @@ public class Movement : MonoBehaviour
     // Set isGrounded to true when the player is on the ground
     private void OnTriggerStay2D(Collider2D collision)
     {
+        Debug.Log("ground detect");
+
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
-            isWalled = false;
+            rb.sharedMaterial = normalMat;
         }
     }
 
-    // detect if player is tumama sa wall
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ground") && !isGrounded)
-        {
-            isWalled = true;
-        }
-    }
+    
 
 
     // Set isGrounded to false when the player leaves the ground
@@ -127,6 +117,7 @@ public class Movement : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = false;
+            Debug.Log("exit");
         }
     }
 
@@ -134,7 +125,6 @@ public class Movement : MonoBehaviour
     private float CalculateJumpForce()
     {
         float chargePercentage = Mathf.Clamp01(jumpTimeCounter / maxJumpTime);
-        Debug.Log(chargePercentage);
         jumpForce = Mathf.Lerp(baseJumpForce, maxJumpForce, chargePercentage);
         return jumpForce;
     }
@@ -148,6 +138,7 @@ public class Movement : MonoBehaviour
         jumpTimeCounter = 0;
         isChargingJump = false;
         isJumping = true;
+        rb.sharedMaterial = bounceMat;
         animator.SetTrigger("jump");
         hasStartedCharging = false; // Reset charging animation flag
     }
