@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: foreground tiles_5
+  m_Name: foreground_7
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: -1976224521, guid: 0e55f91a5181bd74dbea806a809560b2, type: 3}
+  m_Sprite: {fileID: 390347388, guid: 50bd3e26447783e4e87c66e6a8b19316, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1
