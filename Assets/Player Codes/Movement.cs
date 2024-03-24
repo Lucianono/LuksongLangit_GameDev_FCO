@@ -72,7 +72,6 @@ public class Movement : MonoBehaviour
             {
                 ReleaseJump();
             }
-            playSound(jumpSFX);
         }
 
         // Release the charged jump if charging animation has started
@@ -178,6 +177,7 @@ public class Movement : MonoBehaviour
     // Release the charged jump
     private void ReleaseJump()
     {
+        playSound(jumpSFX);
         jumpForce = CalculateJumpForce();
         Vector2 jumpDirection = Vector2.right * lastHorizontalInput ;
         rb.velocity = new Vector2(jumpDirection.x * jumpForce, jumpForce);
