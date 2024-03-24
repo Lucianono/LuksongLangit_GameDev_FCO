@@ -80,16 +80,6 @@ public class Movement : MonoBehaviour
             ReleaseJump();
         }
 
-        // // Prevent changing direction while mid-air
-        // if (!isGrounded)
-        // {
-
-        //     // Set the horizontal velocity based on the last horizontal input direction
-        //     rb.velocity = new Vector2( lastHorizontalInput * moveSpeed, rb.velocity.y);
-            
-        // }
-
-        // Set isJumping to false when landing
         if (isGrounded && isJumping)
         {
             isJumping = false;
@@ -145,16 +135,6 @@ public class Movement : MonoBehaviour
             playSound(landSFX);
         }
     }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ground") && !isGrounded)
-        {
-            jumpForce = 0 ;
-            Debug.Log(jumpForce);
-        }
-    }
-
 
     // Set isGrounded to false when the player leaves the ground
     private void OnTriggerExit2D(Collider2D collision)
