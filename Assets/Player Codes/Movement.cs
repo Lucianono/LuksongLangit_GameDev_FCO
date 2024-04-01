@@ -111,6 +111,7 @@ public class Movement : MonoBehaviour
     {
         AudioSource aud = gameObject.AddComponent<AudioSource>();
         aud.clip = c;
+        aud.volume = 0.5f;
         aud.Play();
         Destroy(aud, c.length);
     }
