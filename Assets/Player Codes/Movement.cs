@@ -34,6 +34,12 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
+         
+
+        if (Mathf.Abs(rb.velocity.x) < 0.01f)
+        {
+            rb.velocity = new Vector2(0f, rb.velocity.y);
+        }
 
         float hAxis = Input.GetAxis("Horizontal");
 
@@ -43,7 +49,6 @@ public class Movement : MonoBehaviour
         // Stop horizontal movement while charging jump or jumping
         if(isChargingJump){
             rb.velocity = new Vector2(0f, rb.velocity.y);
-            Debug.Log("cahrge true");
         }
 
         // Allow horizontal movement only if not charging jump or jumping
@@ -119,7 +124,7 @@ public class Movement : MonoBehaviour
     // Set isGrounded to true when the player is on the ground
     private void OnTriggerStay2D(Collider2D collision)
     {
-        Debug.Log("ground detect");
+        
         jumpForce = 0;
 
         if (collision.gameObject.CompareTag("Ground"))
@@ -143,7 +148,6 @@ public class Movement : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = false;
-            Debug.Log("exit");
         }
     }
 
@@ -160,13 +164,13 @@ public class Movement : MonoBehaviour
     {
         playSound(jumpSFX);
         jumpForce = CalculateJumpForce();
-        Vector2 jumpDirection = Vector2.right * lastHorizontalInput ;
-        rb.velocity = new Vector2(jumpDirection.x * jumpForce, jumpForce);
+        
+        rb.velocity = new Vector2( lastHorizontalInput  * moveSpeed, jumpForce);
+       
         jumpTimeCounter = 0;
         isChargingJump = false;
         isJumping = true;
         rb.sharedMaterial = bounceMat;
         animator.SetTrigger("jump");
-        Debug.Log("bouncerOn");
     }
 }
