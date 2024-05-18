@@ -10,22 +10,25 @@ public class hbdialogue : MonoBehaviour
     public string[] lines;
     public float textSpeed;
     public float lineSpeed;
+    public float spawnRate;
     public int projectileCount;
     private int index;
     private float projectileTimeCtr;
 
     public GameObject projectile;
     public Animator animator;
+    public GameObject cameraShakeObject; 
+    private CameraShakeTrigger cameraShake;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        cameraShake = cameraShakeObject.GetComponent<CameraShakeTrigger>();
 
         textComponent.text= string.Empty;
         StartDialogue();
-        InvokeRepeating("SpawnProjectilesBunch", 2.0f, 10f);
+        InvokeRepeating("SpawnProjectilesBunch", 2.0f, spawnRate);
     }
 
     // Update is called once per frame
@@ -77,7 +80,7 @@ public class hbdialogue : MonoBehaviour
     }
 
     void SpawnProjectilesBunch(){
-
+        cameraShake.ShakeCamera();
         animator.SetTrigger("isShouting");
 
         for(int i = 0; i<projectileCount; i++){
