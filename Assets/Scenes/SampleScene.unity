@@ -11635,6 +11635,111 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1348531746}
   m_CullTransparentMesh: 1
+--- !u!1 &1391016901
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1391016904}
+  - component: {fileID: 1391016903}
+  - component: {fileID: 1391016902}
+  m_Layer: 0
+  m_Name: Camera Shake
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1391016902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1391016901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30452baee8a3113479286b19c651b875, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1391016903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1391016901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd438dd108a0f284aa931a2da434f1d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ImpulseDefinition:
+    m_ImpulseChannel: 1
+    m_ImpulseShape: 4
+    m_CustomImpulseShape:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_ImpulseDuration: 1
+    m_ImpulseType: 0
+    m_DissipationRate: 0.25
+    m_RawSignal: {fileID: 0}
+    m_AmplitudeGain: 1
+    m_FrequencyGain: 1
+    m_RepeatMode: 0
+    m_Randomize: 1
+    m_TimeEnvelope:
+      m_AttackShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_DecayShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_AttackTime: 0
+      m_SustainTime: 0.2
+      m_DecayTime: 0.7
+      m_ScaleWithImpact: 1
+      m_HoldForever: 0
+    m_ImpactRadius: 100
+    m_DirectionMode: 0
+    m_DissipationMode: 2
+    m_DissipationDistance: 100
+    m_PropagationSpeed: 343
+  m_DefaultVelocity: {x: 0, y: 1, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_IgnoreTag: 
+  m_UseImpactDirection: 0
+  m_ScaleImpactWithMass: 0
+  m_ScaleImpactWithSpeed: 0
+--- !u!4 &1391016904
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1391016901}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 9.294518, y: 20.385147, z: -0.15238912}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1403928749
 GameObject:
   m_ObjectHideFlags: 0
@@ -12329,10 +12434,13 @@ MonoBehaviour:
   - Do you like here?
   - No?
   - :(
-  textSpeed: 0.01
+  textSpeed: 0.1
   lineSpeed: 1.5
+  spawnRate: 7
   projectileCount: 5
   projectile: {fileID: 8916250518667542760, guid: 6691cbbf15d4cb64087a627954323329, type: 3}
+  animator: {fileID: 446855163}
+  cameraShakeObject: {fileID: 1391016901}
 --- !u!1 &1997094783
 GameObject:
   m_ObjectHideFlags: 3
@@ -13058,6 +13166,7 @@ GameObject:
   - component: {fileID: 2121048659}
   - component: {fileID: 2121048661}
   - component: {fileID: 2121048660}
+  - component: {fileID: 2121048662}
   m_Layer: 0
   m_Name: Virtual Camera 2
   m_TagString: Untagged
@@ -13137,6 +13246,29 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 1997094784}
+--- !u!114 &2121048662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2121048658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ApplyAfter: 2
+  m_ChannelMask: 1
+  m_Gain: 1
+  m_Use2DDistance: 0
+  m_UseCameraSpace: 1
+  m_ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    m_AmplitudeGain: 1
+    m_FrequencyGain: 1
+    m_Duration: 1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1001 &2524397444188812072
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13210,3 +13342,4 @@ SceneRoots:
   - {fileID: 789320679}
   - {fileID: 1070504005}
   - {fileID: 446855165}
+  - {fileID: 1391016904}
