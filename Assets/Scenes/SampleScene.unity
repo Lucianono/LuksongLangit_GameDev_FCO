@@ -12331,6 +12331,7 @@ MonoBehaviour:
   - :(
   textSpeed: 0.01
   lineSpeed: 1.5
+  projectileCount: 5
   projectile: {fileID: 8916250518667542760, guid: 6691cbbf15d4cb64087a627954323329, type: 3}
 --- !u!1 &1997094783
 GameObject:

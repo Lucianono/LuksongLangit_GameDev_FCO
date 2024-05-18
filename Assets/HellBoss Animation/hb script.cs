@@ -10,10 +10,12 @@ public class hbdialogue : MonoBehaviour
     public string[] lines;
     public float textSpeed;
     public float lineSpeed;
+    public int projectileCount;
     private int index;
     private float projectileTimeCtr;
 
     public GameObject projectile;
+    public Animator animator;
 
 
     // Start is called before the first frame update
@@ -21,10 +23,9 @@ public class hbdialogue : MonoBehaviour
     {
         
 
-
         textComponent.text= string.Empty;
         StartDialogue();
-         InvokeRepeating("SpawnProjectile", 2.0f, 3f);
+        InvokeRepeating("SpawnProjectilesBunch", 2.0f, 10f);
     }
 
     // Update is called once per frame
@@ -75,9 +76,23 @@ public class hbdialogue : MonoBehaviour
         projectileTimeCtr += Time.deltaTime;
     }
 
-    void SpawnProjectile(){
+    void SpawnProjectilesBunch(){
+
+        animator.SetTrigger("isShouting");
+
+        for(int i = 0; i<projectileCount; i++){
+
+            Invoke("SpawnProjectile",Random.Range(0.1f, 2f));
+
+        }
 
         projectileTimeCtr = 0;
-        Instantiate(projectile, new Vector2(0f,38f), Quaternion.identity);
+        
+    }
+
+    void SpawnProjectile(){
+
+        Instantiate(projectile, new Vector2(Random.Range(-15.0f, 15.0f),38f), Quaternion.identity);
+        
     }
 }

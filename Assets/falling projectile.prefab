@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2970913485304647388}
   - component: {fileID: 5282586191216415199}
   - component: {fileID: 8206557154477431310}
+  - component: {fileID: 4086264820653814268}
   m_Layer: 0
   m_Name: falling projectile
   m_TagString: Untagged
@@ -74,7 +75,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 4
   m_Sprite: {fileID: -354294341, guid: 50bd3e26447783e4e87c66e6a8b19316, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -161,3 +162,15 @@ PolygonCollider2D:
       - {x: 0.1747737, y: -1.9778328}
       - {x: 1, y: 2.0121756}
   m_UseDelaunayMesh: 0
+--- !u!114 &4086264820653814268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8916250518667542760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c64d8cab36bb8b4abf5da5370c86bd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
