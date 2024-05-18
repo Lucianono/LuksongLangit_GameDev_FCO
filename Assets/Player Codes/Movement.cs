@@ -14,8 +14,8 @@ public class Movement : MonoBehaviour
     public float maxJumpForce = 20f; // Maximum jump force
     public float jumpChargeRate = 10f; // Rate at which jump force increases while charging
     public float maxJumpTime = 1f; // Maximum duration of the jump
-    public PhysicsMaterial2D bounceMat, normalMat; 
-   
+    public PhysicsMaterial2D bounceMat, normalMat;
+
     public float jumpForce;
     public float jumpTimeCounter = 0;
     public bool isGrounded;
@@ -23,6 +23,9 @@ public class Movement : MonoBehaviour
     public bool isJumping;
     public bool hasStartedCharging; // New variable to track if charging animation has started
     public float lastHorizontalInput;
+
+    private bool moveLeft = false;
+    private bool moveRight = false;
 
     void Start()
     {
@@ -34,8 +37,6 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
-         
-
         if (Mathf.Abs(rb.velocity.x) < 0.01f)
         {
             rb.velocity = new Vector2(0f, rb.velocity.y);
@@ -43,32 +44,41 @@ public class Movement : MonoBehaviour
 
         float hAxis = Input.GetAxis("Horizontal");
 
-        if (hAxis < 0) sr.flipX = true;
-        else if (hAxis > 0) sr.flipX = false;
+        // Check if UI buttons are pressed for movement
+        float uiMovement = 0f;
+        if (moveLeft) uiMovement -= 1f;
+        if (moveRight) uiMovement += 1f;
+
+        // Combine keyboard input and UI input for movement
+        float combinedMovement = hAxis + uiMovement;
+        combinedMovement = Mathf.Clamp(combinedMovement, -1f, 1f);
+
+        if (combinedMovement < 0) sr.flipX = true;
+        else if (combinedMovement > 0) sr.flipX = false;
 
         // Stop horizontal movement while charging jump or jumping
-        if(isChargingJump){
+        if (isChargingJump)
+        {
             rb.velocity = new Vector2(0f, rb.velocity.y);
         }
 
         // Allow horizontal movement only if not charging jump or jumping
         if (!isChargingJump && isGrounded && !isJumping)
         {
-            rb.velocity = new Vector2(hAxis * moveSpeed, rb.velocity.y);
-            lastHorizontalInput = hAxis;
+            rb.velocity = new Vector2(combinedMovement * moveSpeed, rb.velocity.y);
+            lastHorizontalInput = combinedMovement;
         }
 
         // Start charging the jump if the player is grounded and presses the jump button
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !animator.GetBool("isFalling") && !isChargingJump)
         {
-            
             isChargingJump = true;
             jumpTimeCounter = 0;
             animator.SetTrigger("charge");
         }
 
         // Charge the jump if the player is holding down the jump button and charging animation has started
-        if (Input.GetKey(KeyCode.Space) && isGrounded && !animator.GetBool("isFalling"))
+        if ((Input.GetKey(KeyCode.Space) || isChargingJump) && isGrounded && !animator.GetBool("isFalling"))
         {
             jumpTimeCounter += Time.deltaTime;
 
@@ -90,12 +100,12 @@ public class Movement : MonoBehaviour
             isJumping = false;
         }
 
-        if(rb.velocity.y < -1){
-
+        if (rb.velocity.y < -1)
+        {
             rb.sharedMaterial = normalMat;
-
         }
-        animator.SetBool("isWalking", hAxis != 0);
+
+        animator.SetBool("isWalking", combinedMovement != 0);
         animator.SetBool("isFalling", rb.velocity.y < -0.5);
 
         if (rb.velocity.x != 0 && isGrounded)
@@ -105,14 +115,50 @@ public class Movement : MonoBehaviour
                 audioSource.Play();
             }
         }
-        else 
+        else
         {
             audioSource.Stop();
         }
-
     }
 
-    void playSound(AudioClip c) 
+    public void MoveLeft(bool isPressed)
+    {
+        moveLeft = isPressed;
+    }
+
+    public void MoveRight(bool isPressed)
+    {
+        moveRight = isPressed;
+    }
+
+    public void StartJumpCharge()
+    {
+        if (isGrounded && !animator.GetBool("isFalling") && !isChargingJump)
+        {
+            isChargingJump = true;
+            jumpTimeCounter = 0;
+            animator.SetTrigger("charge");
+        }
+    }
+
+    public void ReleaseJump()
+    {
+        if (isChargingJump)
+        {
+            playSound(jumpSFX);
+            jumpForce = CalculateJumpForce();
+
+            rb.velocity = new Vector2(lastHorizontalInput * moveSpeed, jumpForce);
+
+            jumpTimeCounter = 0;
+            isChargingJump = false;
+            isJumping = true;
+            rb.sharedMaterial = bounceMat;
+            animator.SetTrigger("jump");
+        }
+    }
+
+    void playSound(AudioClip c)
     {
         AudioSource aud = gameObject.AddComponent<AudioSource>();
         aud.clip = c;
@@ -121,12 +167,9 @@ public class Movement : MonoBehaviour
         Destroy(aud, c.length);
     }
 
-    // Set isGrounded to true when the player is on the ground
     private void OnTriggerStay2D(Collider2D collision)
     {
-        
         jumpForce = 0;
-
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
@@ -142,7 +185,6 @@ public class Movement : MonoBehaviour
         }
     }
 
-    // Set isGrounded to false when the player leaves the ground
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
@@ -151,26 +193,10 @@ public class Movement : MonoBehaviour
         }
     }
 
-    // Calculate the jump force based on the time the jump button was held down
     private float CalculateJumpForce()
     {
         float chargePercentage = Mathf.Clamp01(jumpTimeCounter / maxJumpTime);
         jumpForce = Mathf.Lerp(baseJumpForce, maxJumpForce, chargePercentage);
         return jumpForce;
-    }
-
-    // Release the charged jump
-    private void ReleaseJump()
-    {
-        playSound(jumpSFX);
-        jumpForce = CalculateJumpForce();
-        
-        rb.velocity = new Vector2( lastHorizontalInput  * moveSpeed, jumpForce);
-       
-        jumpTimeCounter = 0;
-        isChargingJump = false;
-        isJumping = true;
-        rb.sharedMaterial = bounceMat;
-        animator.SetTrigger("jump");
     }
 }
