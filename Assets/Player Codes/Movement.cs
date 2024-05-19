@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class Movement : MonoBehaviour
 {
+   
     Rigidbody2D rb;
     SpriteRenderer sr;
     Animator animator;
@@ -23,6 +26,9 @@ public class Movement : MonoBehaviour
     public bool isJumping;
     public bool hasStartedCharging; // New variable to track if charging animation has started
     public float lastHorizontalInput;
+    public GameObject gameOverCanvas;
+    public GameObject timeCanvas;
+    public GameObject hellBoss;
 
     void Start()
     {
@@ -34,7 +40,7 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
-         
+      
 
         if (Mathf.Abs(rb.velocity.x) < 0.01f)
         {
@@ -59,7 +65,7 @@ public class Movement : MonoBehaviour
         }
 
         // Start charging the jump if the player is grounded and presses the jump button
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !animator.GetBool("isFalling") && !isChargingJump)
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded  && !isChargingJump)
         {
             
             isChargingJump = true;
@@ -68,7 +74,7 @@ public class Movement : MonoBehaviour
         }
 
         // Charge the jump if the player is holding down the jump button and charging animation has started
-        if (Input.GetKey(KeyCode.Space) && isGrounded && !animator.GetBool("isFalling"))
+        if (Input.GetKey(KeyCode.Space) && isGrounded)
         {
             jumpTimeCounter += Time.deltaTime;
 
@@ -80,7 +86,7 @@ public class Movement : MonoBehaviour
         }
 
         // Release the charged jump if charging animation has started
-        if (Input.GetKeyUp(KeyCode.Space) && isGrounded && !animator.GetBool("isFalling"))
+        if (Input.GetKeyUp(KeyCode.Space) && isGrounded )
         {
             ReleaseJump();
         }
@@ -96,7 +102,7 @@ public class Movement : MonoBehaviour
 
         }
         animator.SetBool("isWalking", hAxis != 0);
-        animator.SetBool("isFalling", rb.velocity.y < -0.5);
+        animator.SetBool("isFalling", rb.velocity.y < -1);
 
         if (rb.velocity.x != 0 && isGrounded)
         {
@@ -136,6 +142,20 @@ public class Movement : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.gameObject.name == "finishline")
+        {
+            Time.timeScale = 0f;
+            gameOverCanvas.SetActive(true);
+
+        }
+
+        if (collision.gameObject.name == "bossline")
+        {
+            Debug.Log("start boss");
+            hellBoss.SetActive(true);
+
+        }
+
         if (collision.gameObject.CompareTag("Ground"))
         {
             playSound(landSFX);
@@ -148,6 +168,10 @@ public class Movement : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = false;
+        }
+        if (collision.gameObject.name == "finishline")
+        {
+            Time.timeScale = 1f;
         }
     }
 
@@ -173,4 +197,6 @@ public class Movement : MonoBehaviour
         rb.sharedMaterial = bounceMat;
         animator.SetTrigger("jump");
     }
+
 }
+
