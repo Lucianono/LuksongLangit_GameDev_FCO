@@ -12623,7 +12623,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4680ddabb0e73924f96369fd2fb2cac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpSFX: {fileID: 8300000, guid: eb1f773f5c1306742acd1e0170a0f9bd, type: 3}
+  jumpSFX: {fileID: 8300000, guid: 892791f2efdaccc41bffa2a8da6e7b87, type: 3}
   landSFX: {fileID: 8300000, guid: 7a466bafa6ab94642a08d70ac4d59405, type: 3}
   hitSFX: {fileID: 8300000, guid: fafd769f5ab88fa4ea8da4e15c7bcfca, type: 3}
   moveSpeed: 6
