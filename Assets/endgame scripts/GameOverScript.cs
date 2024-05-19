@@ -15,16 +15,15 @@ public class GameOverScreen : MonoBehaviour
 
     void Start()
     {
+        
         startTime = Time.time;
+
     }
 
     void Update()
     {
-        elapsedTime += Time.deltaTime;
-        int minutes = Mathf.FloorToInt(elapsedTime / 60);
-        int seconds = Mathf.FloorToInt(elapsedTime % 60);
-        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
-        gameOverText.text = "Your time is  " + elapsedTime.ToString("F2") + " minutes";
+        
+        gameOverText.text = timerText.text;
     }
 
     public void restartButton()
