@@ -95,7 +95,7 @@ public class hbdialogue : MonoBehaviour
 
     void SpawnProjectile(){
 
-        Instantiate(projectile, new Vector2(Random.Range(-15.0f, 15.0f),50f), Quaternion.identity);
+        Instantiate(projectile, new Vector2(Random.Range(-15.0f, 15.0f),48f), Quaternion.identity);
         
     }
 }
