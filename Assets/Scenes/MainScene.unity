@@ -7331,7 +7331,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &635798327
 RectTransform:
   m_ObjectHideFlags: 0
@@ -43012,7 +43012,7 @@ MonoBehaviour:
   - :(
   textSpeed: 0.1
   lineSpeed: 1.5
-  spawnRate: 7
+  spawnRate: 10
   projectileCount: 5
   projectile: {fileID: 8916250518667542760, guid: 6691cbbf15d4cb64087a627954323329, type: 3}
   animator: {fileID: 480857040}
@@ -43215,8 +43215,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278255370
-  m_fontColor: {r: 0.038184762, g: 1, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -55704,7 +55704,7 @@ Transform:
   m_GameObject: {fileID: 2027622646}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.86, y: 16.27, z: 0.4848758}
+  m_LocalPosition: {x: 7.86, y: 16.6, z: 0.4848758}
   m_LocalScale: {x: 10.95, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -55799,7 +55799,7 @@ Transform:
   m_GameObject: {fileID: 2042977417}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.29569256, y: 6.03, z: -10.066935}
+  m_LocalPosition: {x: -0.29569256, y: 5.34, z: -10.066935}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -60642,6 +60642,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 1396646513}
   - {fileID: 644366053}
+  - {fileID: 1745893473}
   - {fileID: 102292444}
   - {fileID: 1733091507}
   - {fileID: 804790117}
@@ -60661,7 +60662,6 @@ SceneRoots:
   - {fileID: 2042977420}
   - {fileID: 1213045994}
   - {fileID: 1535467583}
-  - {fileID: 1745893473}
   - {fileID: 989549054}
   - {fileID: 926646344}
   - {fileID: 1494297653}

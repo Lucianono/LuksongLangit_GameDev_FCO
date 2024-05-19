@@ -28,7 +28,7 @@ public class GameOverScreen : MonoBehaviour
 
     public void restartButton()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
 
     }
 
