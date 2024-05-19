@@ -28,6 +28,7 @@ public class Movement : MonoBehaviour
     public float lastHorizontalInput;
     public GameObject gameOverCanvas;
     public GameObject timeCanvas;
+    public GameObject hellBoss;
 
     void Start()
     {
@@ -145,6 +146,13 @@ public class Movement : MonoBehaviour
         {
             Time.timeScale = 0f;
             gameOverCanvas.SetActive(true);
+
+        }
+
+        if (collision.gameObject.name == "bossline")
+        {
+            Debug.Log("start boss");
+            hellBoss.SetActive(true);
 
         }
 
