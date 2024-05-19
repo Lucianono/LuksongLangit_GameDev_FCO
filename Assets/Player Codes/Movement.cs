@@ -97,6 +97,18 @@ public class Movement : MonoBehaviour
             }
         }
 
+        // Charge the jump if the player is holding down the jump button and charging animation has started
+        if ((Input.GetKey(KeyCode.Space) || isChargingJump) && isGrounded && !animator.GetBool("isFalling"))
+        {
+            jumpTimeCounter += Time.deltaTime;
+
+            // Automatically trigger the jump if the max jump force has been reached
+            if (jumpTimeCounter >= maxJumpTime)
+            {
+                ReleaseJump();
+            }
+        }
+
         // Release the charged jump if charging animation has started
         if (Input.GetKeyUp(KeyCode.Space) && isGrounded )
         {
@@ -113,8 +125,8 @@ public class Movement : MonoBehaviour
             rb.sharedMaterial = normalMat;
         }
 
-        
-        animator.SetBool("isWalking", hAxis != 0);
+
+        animator.SetBool("isWalking", combinedMovement != 0);
         animator.SetBool("isFalling", rb.velocity.y < -1);
 
         if (rb.velocity.x != 0 && isGrounded)
