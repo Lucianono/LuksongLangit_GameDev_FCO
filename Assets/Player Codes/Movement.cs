@@ -113,7 +113,7 @@ public class Movement : MonoBehaviour
             rb.sharedMaterial = normalMat;
         }
 
-        }
+        
         animator.SetBool("isWalking", hAxis != 0);
         animator.SetBool("isFalling", rb.velocity.y < -1);
 
@@ -226,22 +226,8 @@ public class Movement : MonoBehaviour
         jumpForce = Mathf.Lerp(baseJumpForce, maxJumpForce, chargePercentage);
         return jumpForce;
     }
-}
 
-    // Release the charged jump
-    private void ReleaseJump()
-    {
-        playSound(jumpSFX);
-        jumpForce = CalculateJumpForce();
-        
-        rb.velocity = new Vector2( lastHorizontalInput  * moveSpeed, jumpForce);
-       
-        jumpTimeCounter = 0;
-        isChargingJump = false;
-        isJumping = true;
-        rb.sharedMaterial = bounceMat;
-        animator.SetTrigger("jump");
-    }
+    
 
 }
 

@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class GameOverScreen : MonoBehaviour
 {
-    public Text gameOverText;
+    public TextMeshProUGUI gameOverText;
     [SerializeField] TextMeshProUGUI timerText;
     float elapsedTime;
     private float startTime;
