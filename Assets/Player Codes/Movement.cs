@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class Movement : MonoBehaviour
 {
+   
     Rigidbody2D rb;
     SpriteRenderer sr;
     Animator animator;
@@ -23,6 +26,8 @@ public class Movement : MonoBehaviour
     public bool isJumping;
     public bool hasStartedCharging; // New variable to track if charging animation has started
     public float lastHorizontalInput;
+    public GameObject gameOverCanvas;
+    public GameObject timeCanvas;
 
     void Start()
     {
@@ -34,7 +39,7 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
-         
+      
 
         if (Mathf.Abs(rb.velocity.x) < 0.01f)
         {
@@ -136,6 +141,13 @@ public class Movement : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.gameObject.name == "finishline")
+        {
+            Time.timeScale = 0f;
+            gameOverCanvas.SetActive(true);
+
+        }
+
         if (collision.gameObject.CompareTag("Ground"))
         {
             playSound(landSFX);
@@ -148,6 +160,10 @@ public class Movement : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = false;
+        }
+        if (collision.gameObject.name == "finishline")
+        {
+            Time.timeScale = 1f;
         }
     }
 
@@ -173,4 +189,6 @@ public class Movement : MonoBehaviour
         rb.sharedMaterial = bounceMat;
         animator.SetTrigger("jump");
     }
+
 }
+
